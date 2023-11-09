@@ -8,6 +8,8 @@ public class LevelGrid : MonoBehaviour
     public static LevelGrid Instance { get; private set; }
     [SerializeField] private Transform gridDebugObjectPrefab;
     private GridSystem gridSystem;
+
+    public event EventHandler OnAnyUnitMovedGridPosition;
     private void Awake()
     {
         if (!Instance)
@@ -42,10 +44,12 @@ public class LevelGrid : MonoBehaviour
         gridObject.RemoveUnit(unit);
     }
 
-    public void UnitMoveGridPosition(Unit unit, GridPosition fromGridPosition, GridPosition toGridPosition)
+    public void UnitMovedGridPosition(Unit unit, GridPosition fromGridPosition, GridPosition toGridPosition)
     {
         RemoveUnitAtGridPosition(fromGridPosition, unit);
         AddUnitAtGridPosition(toGridPosition, unit);
+        
+        OnAnyUnitMovedGridPosition?.Invoke(this, EventArgs.Empty);
     }
 
     public GridPosition GetGridPosition(Vector3 worldPosition) => gridSystem.GetGridPosition(worldPosition);

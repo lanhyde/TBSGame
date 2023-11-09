@@ -7,7 +7,7 @@ public class ShootAction : BaseAction
 {
     private enum State { Aiming, Shooting, Cooloff }
     public override string GetActionName() => "Shoot";
-    private int maxShootDistance = 7;
+    public const int MaxShootDistance = 2;
     private State state;
     private float stateTimer;
     private Unit targetUnit;
@@ -92,9 +92,9 @@ public class ShootAction : BaseAction
 
         GridPosition unitGridPosition = unit.GetGridPosition();
         
-        for (int x = -maxShootDistance; x <= maxShootDistance; ++x)
+        for (int x = -MaxShootDistance; x <= MaxShootDistance; ++x)
         {
-            for (int z = -maxShootDistance; z <= maxShootDistance; ++z)
+            for (int z = -MaxShootDistance; z <= MaxShootDistance; ++z)
             {
                 GridPosition offsetGridPosition = new GridPosition(x, z);
                 GridPosition testGridPosition = unitGridPosition + offsetGridPosition;
@@ -105,7 +105,7 @@ public class ShootAction : BaseAction
                 }
 
                 int testDistance = Mathf.Abs(x) + Mathf.Abs(z);
-                if (testDistance > maxShootDistance)
+                if (testDistance > MaxShootDistance)
                 {
                     continue;
                 }
