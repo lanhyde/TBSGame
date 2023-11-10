@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public abstract class BaseAction : MonoBehaviour
@@ -44,4 +45,22 @@ public abstract class BaseAction : MonoBehaviour
     }
 
     public Unit GetUnit() => unit;
+
+    public EnemyAIAction GetBestEnemyAIAction()
+    {
+        List<EnemyAIAction> enemyAIActions = new List<EnemyAIAction>();
+        IList<GridPosition> validActionGridPositions = GetValidActionGridPositionList();
+        foreach (var gridPosition in validActionGridPositions)
+        {
+            EnemyAIAction enemyAIAction = GetEnemyAIAction(gridPosition);
+            enemyAIActions.Add(enemyAIAction);
+        }
+
+        if (enemyAIActions.Count <= 0) return null;
+        enemyAIActions.Sort((a, b) => b.actionValue - a.actionValue);
+        return enemyAIActions.First();
+
+    }
+
+    public abstract EnemyAIAction GetEnemyAIAction(GridPosition gridPosition);
 }
