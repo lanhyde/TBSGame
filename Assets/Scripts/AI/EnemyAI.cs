@@ -47,7 +47,15 @@ public class EnemyAI : MonoBehaviour
                 if (timer <= 0f)
                 {
                     state = State.Busy;
-                    TakeEnemyAIAction(SetStateTakingTurn);
+                    if (TryTakeEnemyAIAction(SetStateTakingTurn))
+                    {
+                        state = State.Busy;
+                    }
+                    else
+                    {
+                        // no more enemies have actions, end enemy turn
+                        TurnSystem.Instance.NextTurn();
+                    }
                 }
                 break;
             case State.Busy:
@@ -71,8 +79,34 @@ public class EnemyAI : MonoBehaviour
         timer = 0.5f;
         state = State.TakingTurn;
     }
-    private void TakeEnemyAIAction(Action completionCallback) 
+    private bool TryTakeEnemyAIAction(Action completionCallback) 
     {
+        foreach (var enemyUnit in UnitManager.Instance.GetEnemyUnitList())
+        {
+            if (TryTakeEnemyAIAction(enemyUnit, completionCallback))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool TryTakeEnemyAIAction(Unit enemyUnit, Action completionCallback)
+    {
+        var spinAction = enemyUnit.GetSpinAction();
+        GridPosition actionGridPosition = enemyUnit.GetGridPosition();
+        if (!spinAction.IsValidActionGridPosition(actionGridPosition))
+        {
+            return false;
+        }
+
+        if (!enemyUnit.TrySpendActionPointsToTakeAction(spinAction))
+        {
+            return false;
+        }
         
+        spinAction.TakeAction(actionGridPosition, completionCallback);
+        return true;
     }
 }
