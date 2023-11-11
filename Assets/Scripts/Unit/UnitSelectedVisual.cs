@@ -26,7 +26,7 @@ public class UnitSelectedVisual : MonoBehaviour
 
     private void OnSelectedUnitChanged(object sender, EventArgs args)
     {
-       UpdateVisual();
+        UpdateVisual();
     }
     
     private void UpdateVisual()

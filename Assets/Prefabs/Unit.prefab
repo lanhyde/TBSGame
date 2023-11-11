@@ -3000,7 +3000,7 @@ GameObject:
   - component: {fileID: 5864626473839743727}
   - component: {fileID: 4405732517239329881}
   - component: {fileID: 787334119055200557}
-  - component: {fileID: 7895840587536139228}
+  - component: {fileID: 587612464044012048}
   m_Layer: 7
   m_Name: SelectedVisual
   m_TagString: Untagged
@@ -3073,7 +3073,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7895840587536139228
+--- !u!114 &587612464044012048
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
