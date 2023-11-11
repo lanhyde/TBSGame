@@ -1,27 +1,28 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridSystem
+public class GridSystem<TGridObject> 
 {
     private int width;
     private int height;
     private float cellSize;
-    private GridObject[,] gridObjects;
+    private TGridObject[,] gridObjects;
 
     public int Width => width;
     public int Height => height;
-    public GridSystem(int width, int height, float cellSize)
+    public GridSystem(int width, int height, float cellSize, Func<GridSystem<TGridObject>, GridPosition, TGridObject> createGridObject)
     {
         this.width = width;
         this.height = height;
         this.cellSize = cellSize;
-        gridObjects = new GridObject[width, height];
+        gridObjects = new TGridObject[width, height];
         for (int i = 0; i < this.width; ++i)
         {
             for (int j = 0; j < this.height; ++j)
             {
-                var gridObject = new GridObject(this, new GridPosition(i, j));
+                var gridObject = createGridObject(this, new GridPosition(i, j));
                 gridObjects[i, j] = gridObject;
             }
         }
@@ -51,7 +52,7 @@ public class GridSystem
         }
     }
 
-    public GridObject GetGridObject(GridPosition gridPosition)
+    public TGridObject GetGridObject(GridPosition gridPosition)
     {
         return gridObjects[gridPosition.x, gridPosition.z];
     }
