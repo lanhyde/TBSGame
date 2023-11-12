@@ -10,6 +10,7 @@ public class PathNode
     private int fCost;
     private PathNode cameFromPathNode;
 
+    public bool IsWalkable { get; set; } = true;
     public int GCost => gCost;
     public int HCost => hCost;
     public int FCost => fCost;
