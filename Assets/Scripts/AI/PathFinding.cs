@@ -213,8 +213,7 @@ public class PathFinding : MonoBehaviour
             pathNodes.Add(currentNode.GetCameFromPathNode());
             currentNode = currentNode.GetCameFromPathNode();
         }
-
-        pathNodes.Reverse();
-        return pathNodes.Select(node => node.GetGridPosition()).ToList();
+        
+        return pathNodes.Reverse().Select(node => node.GetGridPosition()).ToList();
     }
 }
