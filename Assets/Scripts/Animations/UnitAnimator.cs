@@ -9,8 +9,12 @@ public class UnitAnimator : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private Transform bulletProjectilePrefab;
     [SerializeField] private Transform shootPointTransform;
+    [SerializeField] private Transform rifleTransform;
+    [SerializeField] private Transform swordTransform;
+    
     [CanBeNull] private MoveAction moveAction;
     [CanBeNull] private ShootAction shootAction;
+    [CanBeNull] private SwordAction swordAction;
     private void Awake()
     {
         if (TryGetComponent(out moveAction))
@@ -23,6 +27,17 @@ public class UnitAnimator : MonoBehaviour
         {
             shootAction.OnShoot += OnShoot;
         }
+
+        if (TryGetComponent(out swordAction))
+        {
+            swordAction.OnSwordActionStarted += OnSwordActionStarted;
+            swordAction.OnSwordActionCompleted += OnSwordActionCompleted;
+        }
+    }
+
+    private void Start()
+    {
+        EquipRifle();
     }
 
     private void OnDestroy()
@@ -36,6 +51,12 @@ public class UnitAnimator : MonoBehaviour
         if (shootAction)
         {
             shootAction.OnShoot -= OnShoot;
+        }
+
+        if (swordAction)
+        {
+            swordAction.OnSwordActionStarted -= OnSwordActionStarted;
+            swordAction.OnSwordActionCompleted -= OnSwordActionCompleted;
         }
     }
 
@@ -57,5 +78,28 @@ public class UnitAnimator : MonoBehaviour
         Vector3 targetUnitShootAtPosition = args.targetUnit.GetWorldPosition();
         targetUnitShootAtPosition.y = shootPointTransform.position.y;
         bulletProjectile.Setup(targetUnitShootAtPosition);
+    }
+
+    private void OnSwordActionStarted(object sender, EventArgs e)
+    {
+        EquipSword();
+        animator.SetTrigger("SwordSlash");
+    }
+
+    private void OnSwordActionCompleted(object sender, EventArgs e)
+    {
+        EquipRifle();
+    }
+
+    private void EquipSword()
+    {
+        swordTransform.gameObject.SetActive(true);
+        rifleTransform.gameObject.SetActive(false);
+    }
+
+    private void EquipRifle()
+    {
+        swordTransform.gameObject.SetActive(false);
+        rifleTransform.gameObject.SetActive(true);
     }
 }
