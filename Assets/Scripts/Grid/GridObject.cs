@@ -9,7 +9,7 @@ public class GridObject
     private GridPosition gridPosition;
     private GridSystem<GridObject> gridSystem;
     private List<Unit> units;
-    private Door door;
+    private Interactable interactable;
     public GridObject(GridSystem<GridObject> gridSystem, GridPosition gridPosition)
     {
         this.gridSystem = gridSystem;
@@ -57,13 +57,13 @@ public class GridObject
         return null;
     }
 
-    public Door GetDoor()
+    public Interactable GetInteractable()
     {
-        return door;
+        return interactable;
     }
 
-    public void SetDoor(Door door)
+    public void SetInteractable(Interactable door)
     {
-        this.door = door;
+        this.interactable = door;
     }
 }
