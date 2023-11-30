@@ -17,7 +17,7 @@ public class PathFinding : MonoBehaviour
     private int width;
     private int height;
     private float cellSize;
-    private GridSystem<PathNode> gridSystem;
+    private GridSystemHex<PathNode> _gridSystemHex;
     private void Awake()
     {
         if (Instance != null)
@@ -35,8 +35,8 @@ public class PathFinding : MonoBehaviour
         this.height = height;
         this.cellSize = cellSize;
         
-        gridSystem =
-            new GridSystem<PathNode>(width, height, cellSize, (_, gridPosition) => new PathNode(gridPosition));
+        _gridSystemHex =
+            new GridSystemHex<PathNode>(width, height, cellSize, (_, gridPosition) => new PathNode(gridPosition));
         // gridSystem.CreateDebugObjects(gridDebugObjectPrefab);
 
         for (int x = 0; x < width; ++x)
@@ -62,16 +62,16 @@ public class PathFinding : MonoBehaviour
         IList<PathNode> openList = new List<PathNode>();
         IList<PathNode> closedList = new List<PathNode>();
 
-        PathNode startNode = gridSystem.GetGridObject(startPosition);
-        PathNode endNode = gridSystem.GetGridObject(endPosition);
+        PathNode startNode = _gridSystemHex.GetGridObject(startPosition);
+        PathNode endNode = _gridSystemHex.GetGridObject(endPosition);
         openList.Add(startNode);
 
-        for (int x = 0; x < gridSystem.Width; ++x)
+        for (int x = 0; x < _gridSystemHex.Width; ++x)
         {
-            for (int z = 0; z < gridSystem.Height; ++z)
+            for (int z = 0; z < _gridSystemHex.Height; ++z)
             {
                 GridPosition gridPosition = new GridPosition(x, z);
-                PathNode pathNode = gridSystem.GetGridObject(gridPosition);
+                PathNode pathNode = _gridSystemHex.GetGridObject(gridPosition);
 
                 pathNode.SetGCost(int.MaxValue);
                 pathNode.SetHCost(0);
@@ -147,7 +147,7 @@ public class PathFinding : MonoBehaviour
 
     private PathNode GetNode(int x, int z)
     {
-        return gridSystem.GetGridObject(new GridPosition(x, z));
+        return _gridSystemHex.GetGridObject(new GridPosition(x, z));
     }
     private IList<PathNode> GetNeighborNodes(PathNode currentNode)
     {
@@ -164,14 +164,14 @@ public class PathFinding : MonoBehaviour
                 neighbors.Add(GetNode(gridPosition.x - 1, gridPosition.z - 1));
             }
 
-            if (gridPosition.z + 1 < gridSystem.Height)
+            if (gridPosition.z + 1 < _gridSystemHex.Height)
             {
                 // Left Up
                 neighbors.Add(GetNode(gridPosition.x - 1, gridPosition.z + 1));
             }
         }
 
-        if (gridPosition.x + 1 < gridSystem.Width)
+        if (gridPosition.x + 1 < _gridSystemHex.Width)
         {
             // Right
             neighbors.Add(GetNode(gridPosition.x + 1, gridPosition.z));
@@ -181,7 +181,7 @@ public class PathFinding : MonoBehaviour
                 neighbors.Add(GetNode(gridPosition.x + 1, gridPosition.z - 1));
             }
 
-            if (gridPosition.z + 1 < gridSystem.Height)
+            if (gridPosition.z + 1 < _gridSystemHex.Height)
             {
                 // Right Up
                 neighbors.Add(GetNode(gridPosition.x + 1, gridPosition.z + 1));
@@ -194,7 +194,7 @@ public class PathFinding : MonoBehaviour
             neighbors.Add(GetNode(gridPosition.x, gridPosition.z - 1));
         }
 
-        if (gridPosition.z + 1 < gridSystem.Height)
+        if (gridPosition.z + 1 < _gridSystemHex.Height)
         {
             // Up
             neighbors.Add(GetNode(gridPosition.x, gridPosition.z + 1));
@@ -221,7 +221,7 @@ public class PathFinding : MonoBehaviour
 
     public bool IsWalkableGridPosition(GridPosition gridPosition)
     {
-        return gridSystem.GetGridObject(gridPosition).IsWalkable;
+        return _gridSystemHex.GetGridObject(gridPosition).IsWalkable;
     }
 
     public bool HasPath(GridPosition startPosition, GridPosition endPosition)
@@ -237,6 +237,6 @@ public class PathFinding : MonoBehaviour
 
     public void SetIsWalkableGridPosition(GridPosition gridPosition, bool isWalkable)
     {
-        gridSystem.GetGridObject(gridPosition).IsWalkable = isWalkable;
+        _gridSystemHex.GetGridObject(gridPosition).IsWalkable = isWalkable;
     }
 }

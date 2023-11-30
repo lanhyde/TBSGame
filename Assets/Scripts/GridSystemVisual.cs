@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -23,7 +24,6 @@ public class GridSystemVisual : MonoBehaviour
     [SerializeField] private List<GridVisualTypeMaterial> gridVisualTypeMaterials;
     
     private GridSystemVisualInstance[,] gridSystemVisualInstances;
-    
     public static GridSystemVisual Instance { get; private set; }
 
     private void Awake()
