@@ -36,14 +36,14 @@ public class PathFinding : MonoBehaviour
         this.cellSize = cellSize;
         
         gridSystem =
-            new GridSystem<PathNode>(width, height, cellSize, (_, gridPosition) => new PathNode(gridPosition));
+            new GridSystem<PathNode>(width, height, cellSize, 0, LevelGrid.FLOOR_HEIGHT, (_, gridPosition) => new PathNode(gridPosition));
         // gridSystem.CreateDebugObjects(gridDebugObjectPrefab);
 
         for (int x = 0; x < width; ++x)
         {
             for (int z = 0; z < height; ++z)
             {
-                GridPosition gridPosition = new GridPosition(x, z);
+                GridPosition gridPosition = new GridPosition(x, z, 0);
                 Vector3 worldPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
                 float raycastOffsetDistance = 5f;
                 if (Physics.Raycast(worldPosition + Vector3.down * raycastOffsetDistance,
@@ -70,7 +70,7 @@ public class PathFinding : MonoBehaviour
         {
             for (int z = 0; z < gridSystem.Height; ++z)
             {
-                GridPosition gridPosition = new GridPosition(x, z);
+                GridPosition gridPosition = new GridPosition(x, z, 0);
                 PathNode pathNode = gridSystem.GetGridObject(gridPosition);
 
                 pathNode.SetGCost(int.MaxValue);
@@ -147,7 +147,7 @@ public class PathFinding : MonoBehaviour
 
     private PathNode GetNode(int x, int z)
     {
-        return gridSystem.GetGridObject(new GridPosition(x, z));
+        return gridSystem.GetGridObject(new GridPosition(x, z, 0));
     }
     private IList<PathNode> GetNeighborNodes(PathNode currentNode)
     {

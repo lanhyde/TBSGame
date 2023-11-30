@@ -34,7 +34,7 @@ public class GrenadeAction : BaseAction
         {
             for (int z = -MaxThrowDistance; z <= MaxThrowDistance; ++z)
             {
-                GridPosition offsetGridPosition = new GridPosition(x, z);
+                GridPosition offsetGridPosition = new GridPosition(x, z, 0);
                 GridPosition testGridPosition = unitGridPosition + offsetGridPosition;
 
                 if (!LevelGrid.Instance.IsValidGridPosition(testGridPosition))
