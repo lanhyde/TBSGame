@@ -9,7 +9,6 @@ public class PathFinding : MonoBehaviour
 {
     public static PathFinding Instance { get; private set; }
     private const int MOVE_STRAIGHT_COST = 10;
-    private const int MOVE_DIAGNOAL_COST = 14;
     
     [SerializeField] private Transform gridDebugObjectPrefab;
     [SerializeField] private LayerMask obstacleLayer;
@@ -81,7 +80,7 @@ public class PathFinding : MonoBehaviour
         }
         
         startNode.SetGCost(0);
-        startNode.SetHCost(CalculateDistance(startPosition, endPosition));
+        startNode.SetHCost(CalculateHeuristicDistance(startPosition, endPosition));
         startNode.CalculateFCost();
 
         while (openList.Count > 0)
@@ -109,13 +108,13 @@ public class PathFinding : MonoBehaviour
                     continue;
                 }
 
-                int tentativeGCost = currentNode.GCost +
-                                     CalculateDistance(currentNode.GetGridPosition(), neighborNode.GetGridPosition());
+                int tentativeGCost = currentNode.GCost + MOVE_STRAIGHT_COST;
+                                     
                 if (tentativeGCost < neighborNode.GCost)
                 {
                     neighborNode.SetCameFromPathNode(currentNode);
                     neighborNode.SetGCost(tentativeGCost);
-                    neighborNode.SetHCost(CalculateDistance(neighborNode.GetGridPosition(), endPosition));
+                    neighborNode.SetHCost(CalculateHeuristicDistance(neighborNode.GetGridPosition(), endPosition));
                     neighborNode.CalculateFCost();
 
                     if (!openList.Contains(neighborNode))
@@ -130,13 +129,10 @@ public class PathFinding : MonoBehaviour
         return null;
     }
 
-    public int CalculateDistance(GridPosition gridPositionA, GridPosition gridPositionB)
+    public int CalculateHeuristicDistance(GridPosition gridPositionA, GridPosition gridPositionB)
     {
-        GridPosition gridPositionDistance = gridPositionA - gridPositionB;
-        int xDistance = Mathf.Abs(gridPositionDistance.x);
-        int zDistance = Mathf.Abs(gridPositionDistance.z);
-        int remaining = Mathf.Abs(xDistance - zDistance);
-        return MOVE_DIAGNOAL_COST * Mathf.Min(xDistance, zDistance) + MOVE_STRAIGHT_COST * remaining;
+        return Mathf.RoundToInt(MOVE_STRAIGHT_COST * Vector3.Distance(_gridSystemHex.GetWorldPosition(gridPositionA),
+            _gridSystemHex.GetWorldPosition(gridPositionB)));
     }
 
     private PathNode GetLowestFCostPathNode(IList<PathNode> pathNodes)
@@ -158,34 +154,12 @@ public class PathFinding : MonoBehaviour
         {
             // Left
             neighbors.Add(GetNode(gridPosition.x - 1, gridPosition.z));
-            if (gridPosition.z - 1 >= 0)
-            {
-                // Left Down
-                neighbors.Add(GetNode(gridPosition.x - 1, gridPosition.z - 1));
-            }
-
-            if (gridPosition.z + 1 < _gridSystemHex.Height)
-            {
-                // Left Up
-                neighbors.Add(GetNode(gridPosition.x - 1, gridPosition.z + 1));
-            }
         }
 
         if (gridPosition.x + 1 < _gridSystemHex.Width)
         {
             // Right
             neighbors.Add(GetNode(gridPosition.x + 1, gridPosition.z));
-            if (gridPosition.z - 1 >= 0)
-            {
-                // Right Down
-                neighbors.Add(GetNode(gridPosition.x + 1, gridPosition.z - 1));
-            }
-
-            if (gridPosition.z + 1 < _gridSystemHex.Height)
-            {
-                // Right Up
-                neighbors.Add(GetNode(gridPosition.x + 1, gridPosition.z + 1));
-            }
         }
 
         if (gridPosition.z - 1 >= 0)
@@ -199,7 +173,34 @@ public class PathFinding : MonoBehaviour
             // Up
             neighbors.Add(GetNode(gridPosition.x, gridPosition.z + 1));
         }
-        
+
+        bool isOddRow = gridPosition.z % 2 != 0;
+        if (isOddRow)
+        {
+            if (gridPosition.x + 1 >= _gridSystemHex.Width) return neighbors;
+            if (gridPosition.z - 1 >= 0)
+            {
+                neighbors.Add(GetNode(gridPosition.x + 1, gridPosition.z - 1));
+            }
+
+            if (gridPosition.z + 1 < _gridSystemHex.Height)
+            {
+                neighbors.Add(GetNode(gridPosition.x + 1, gridPosition.z + 1));
+            }
+        }
+        else
+        {
+            if (gridPosition.x - 1 < 0) return neighbors;
+            if (gridPosition.z - 1 >= 0)
+            {
+                neighbors.Add(GetNode(gridPosition.x - 1, gridPosition.z - 1));
+            }
+
+            if (gridPosition.z + 1 < _gridSystemHex.Height)
+            {
+                neighbors.Add(GetNode(gridPosition.x - 1, gridPosition.z + 1));
+            }
+        }
         return neighbors;
     }
 
