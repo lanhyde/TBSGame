@@ -40,7 +40,7 @@ public class LevelGrid : MonoBehaviour
 
     private void Start()
     {
-        PathFinding.Instance.Setup(width, height, cellSize);
+        PathFinding.Instance.Setup(width, height, cellSize, floorAmount);
     }
 
     public GridSystem<GridObject> GetGridSystem(int floor)
@@ -79,10 +79,17 @@ public class LevelGrid : MonoBehaviour
         return Mathf.RoundToInt(worldPosition.y / FLOOR_HEIGHT);
     }
     public GridPosition GetGridPosition(Vector3 worldPosition) => GetGridSystem(GetFloor(worldPosition)).GetGridPosition(worldPosition);
-    public bool IsValidGridPosition(GridPosition gridPosition) => GetGridSystem(gridPosition.floor).IsValidGridPosition(gridPosition);
+    public bool IsValidGridPosition(GridPosition gridPosition)
+    {
+        if (gridPosition.floor < 0 || gridPosition.floor >= floorAmount)
+        {
+            return false;
+        }
+        return GetGridSystem(gridPosition.floor).IsValidGridPosition(gridPosition);
+    } 
     public Vector3 GetWorldPosition(GridPosition gridPosition) => GetGridSystem(gridPosition.floor).GetWorldPosition(gridPosition);
     public (int, int) GetSize() => (GetGridSystem(0).Width, GetGridSystem(0).Height);
-    
+    public int GetFloorAmount() => floorAmount;
     public bool HasAnyUnitOnGridPosition(GridPosition gridPosition)
     {
         GridObject gridObject = GetGridSystem(gridPosition.floor).GetGridObject(gridPosition);
