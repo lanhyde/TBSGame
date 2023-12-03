@@ -14,11 +14,13 @@ public class PathFinding : MonoBehaviour
     [SerializeField] private Transform gridDebugObjectPrefab;
     [SerializeField] private LayerMask obstacleLayer;
     [SerializeField] private LayerMask floorLayer;
+    [SerializeField] private Transform pathfindingLinkContainer;
     
     private int width;
     private int height;
     private float cellSize;
     private IList<GridSystem<PathNode>> gridSystems;
+    private IList<PathFindingLink> pathFindingLinks;
     private int floorAmount;
     private void Awake()
     {
@@ -76,6 +78,15 @@ public class PathFinding : MonoBehaviour
                         GetNode(x, z, floor).IsWalkable = false;
                     }
                 }
+            }
+        }
+
+        pathFindingLinks = new List<PathFindingLink>();
+        foreach (Transform pathfindingLinkTransform in pathfindingLinkContainer)
+        {
+            if (pathfindingLinkTransform.TryGetComponent(out PathFindingLinkMonoBehaviour pathFindingLinkMonoBehaviour))
+            {
+                pathFindingLinks.Add(pathFindingLinkMonoBehaviour.GetPathfindingLink());
             }
         }
     }
@@ -234,19 +245,34 @@ public class PathFinding : MonoBehaviour
 
         List<PathNode> totalNeighbors = new List<PathNode>(neighbors);
 
-        foreach (var pathNode in neighbors)
+        IList<GridPosition> pathfindingLinkGridPositionList = GetPathfindingLinkConnectedGridPositions(gridPosition);
+
+        foreach (var pathfindingLinkGridPosition in pathfindingLinkGridPositionList)
         {
-            GridPosition neighborGridPosition = pathNode.GetGridPosition();
-            if (neighborGridPosition.floor - 1 >= 0)
-            {
-                totalNeighbors.Add(GetNode(neighborGridPosition.x, neighborGridPosition.z, neighborGridPosition.floor - 1));
-            }
-            if (neighborGridPosition.floor + 1 < floorAmount)
-            {
-                totalNeighbors.Add(GetNode(neighborGridPosition.x, neighborGridPosition.z, neighborGridPosition.floor + 1));
-            }
+            totalNeighbors.Add(GetNode(pathfindingLinkGridPosition.x, pathfindingLinkGridPosition.z, pathfindingLinkGridPosition.floor));
+            
         }
         return totalNeighbors;
+    }
+
+    private IList<GridPosition> GetPathfindingLinkConnectedGridPositions(GridPosition gridPosition)
+    {
+        IList<GridPosition> gridPositionList = new List<GridPosition>();
+
+        foreach (var pathfindingLink in pathFindingLinks)
+        {
+            if (pathfindingLink.gridPositionA == gridPosition)
+            {
+                gridPositionList.Add(pathfindingLink.gridPositionB);
+            }
+
+            if (pathfindingLink.gridPositionB == gridPosition)
+            {
+                gridPositionList.Add(pathfindingLink.gridPositionA);
+            }
+        }
+        
+        return gridPositionList;
     }
 
     private IList<GridPosition> CalculatePath(PathNode node)
