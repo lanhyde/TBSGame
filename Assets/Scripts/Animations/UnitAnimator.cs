@@ -21,6 +21,7 @@ public class UnitAnimator : MonoBehaviour
         {
             moveAction.OnStartMoving += OnStartMoving;
             moveAction.OnStopMoving += OnStopMoving;
+            moveAction.OnChangedFloorStarted += OnChangedFloorsStarted;
         }
 
         if (TryGetComponent(out shootAction))
@@ -46,6 +47,7 @@ public class UnitAnimator : MonoBehaviour
         {
             moveAction.OnStartMoving -= OnStartMoving;
             moveAction.OnStopMoving -= OnStopMoving;
+            moveAction.OnChangedFloorStarted -= OnChangedFloorsStarted;
         }
 
         if (shootAction)
@@ -57,6 +59,18 @@ public class UnitAnimator : MonoBehaviour
         {
             swordAction.OnSwordActionStarted -= OnSwordActionStarted;
             swordAction.OnSwordActionCompleted -= OnSwordActionCompleted;
+        }
+    }
+
+    private void OnChangedFloorsStarted(object sender, MoveAction.OnChangeFloorsStartedEventArgs e)
+    {
+        if (e.targetGridPosition.floor > e.unitGridPosition.floor)
+        {
+            animator.SetTrigger("JumpUp");
+        }
+        else
+        {
+            animator.SetTrigger("JumpDown");
         }
     }
 
