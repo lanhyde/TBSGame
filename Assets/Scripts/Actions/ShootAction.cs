@@ -36,7 +36,8 @@ public class ShootAction : BaseAction
             case State.Aiming:
                 float angularSpeed = 10f;
                 Vector3 aimDir = (targetUnit.GetWorldPosition() - unit.GetWorldPosition()).normalized;
-                transform.forward = Vector3.Lerp(transform.forward, aimDir, Time.deltaTime * angularSpeed);
+                aimDir.y = 0;
+                transform.forward = Vector3.Slerp(transform.forward, aimDir, Time.deltaTime * angularSpeed);
                 break;
             case State.Shooting:
                 if (canShootBullet)
@@ -102,42 +103,45 @@ public class ShootAction : BaseAction
         {
             for (int z = -MaxShootDistance; z <= MaxShootDistance; ++z)
             {
-                GridPosition offsetGridPosition = new GridPosition(x, z, 0);
-                GridPosition testGridPosition = unitGridPosition + offsetGridPosition;
-
-                if (!LevelGrid.Instance.IsValidGridPosition(testGridPosition))
+                for (int floor = -MaxShootDistance; floor <= MaxShootDistance; ++floor)
                 {
-                    continue;
-                }
+                    GridPosition offsetGridPosition = new GridPosition(x, z, floor);
+                    GridPosition testGridPosition = unitGridPosition + offsetGridPosition;
 
-                int testDistance = Mathf.Abs(x) + Mathf.Abs(z);
-                if (testDistance > MaxShootDistance)
-                {
-                    continue;
-                }
+                    if (!LevelGrid.Instance.IsValidGridPosition(testGridPosition))
+                    {
+                        continue;
+                    }
 
-                if (!LevelGrid.Instance.HasAnyUnitOnGridPosition(testGridPosition))
-                {
-                    continue;
-                }
+                    int testDistance = Mathf.Abs(x) + Mathf.Abs(z);
+                    if (testDistance > MaxShootDistance)
+                    {
+                        continue;
+                    }
 
-                Unit targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(testGridPosition);
-                if (targetUnit.IsEnemy() == unit.IsEnemy())
-                {
-                    // Both units on same team
-                    continue;
-                }
+                    if (!LevelGrid.Instance.HasAnyUnitOnGridPosition(testGridPosition))
+                    {
+                        continue;
+                    }
 
-                Vector3 unitWorldPosition = LevelGrid.Instance.GetWorldPosition(unitGridPosition);
-                Vector3 shootDir = (targetUnit.GetWorldPosition() - unitWorldPosition).normalized;
-                float unitShoulderHeight = 1.7f;
-                if (Physics.Raycast(unitWorldPosition + Vector3.up * unitShoulderHeight, shootDir, 
-                        Vector3.Distance(unitWorldPosition, targetUnit.GetWorldPosition()), obstaclesLayer))
-                {
-                    // Blocked by obstacles
-                    continue;
+                    Unit targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(testGridPosition);
+                    if (targetUnit.IsEnemy() == unit.IsEnemy())
+                    {
+                        // Both units on same team
+                        continue;
+                    }
+
+                    Vector3 unitWorldPosition = LevelGrid.Instance.GetWorldPosition(unitGridPosition);
+                    Vector3 shootDir = (targetUnit.GetWorldPosition() - unitWorldPosition).normalized;
+                    float unitShoulderHeight = 1.7f;
+                    if (Physics.Raycast(unitWorldPosition + Vector3.up * unitShoulderHeight, shootDir, 
+                            Vector3.Distance(unitWorldPosition, targetUnit.GetWorldPosition()), obstaclesLayer))
+                    {
+                        // Blocked by obstacles
+                        continue;
+                    }
+                    validGridPositionList.Add(testGridPosition);
                 }
-                validGridPositionList.Add(testGridPosition);
             }
         }
         

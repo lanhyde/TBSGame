@@ -2851,6 +2851,7 @@ GameObject:
   - component: {fileID: 2993296043759243710}
   - component: {fileID: 5142799763795989414}
   - component: {fileID: 2102608844703983055}
+  - component: {fileID: 305791129444871678}
   m_Layer: 7
   m_Name: Unit
   m_TagString: Untagged
@@ -2874,7 +2875,7 @@ Transform:
   - {fileID: 5864626473839743727}
   - {fileID: 7325074598449035022}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2078222084774016941
 MonoBehaviour:
@@ -2951,7 +2952,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   obstaclesLayer:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 320
 --- !u!114 &6924902369711552983
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3036,6 +3037,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1222ac88b21c134e94059ef826762f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &305791129444871678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2078222084774016940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45273a0e23f867d489bad4e7c62e9f60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isDynamicFloorPosition: 1
+  ignoredRenderers:
+  - {fileID: 787334119055200557}
 --- !u!1 &2802729421755624953
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4315698873372545244}
   - component: {fileID: 4307610092555163644}
   - component: {fileID: 4284499816936784880}
+  - component: {fileID: 8373194101192743498}
   m_Layer: 8
   m_Name: Column
   m_TagString: Untagged
@@ -32,7 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4315698873372545244
 MeshFilter:
@@ -106,3 +107,15 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4300000, guid: b45e496b386039141af15f243dd3ac22, type: 3}
+--- !u!114 &8373194101192743498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4293850485967215806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45273a0e23f867d489bad4e7c62e9f60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

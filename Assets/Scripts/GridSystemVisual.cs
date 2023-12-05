@@ -57,7 +57,8 @@ public class GridSystemVisual : MonoBehaviour
         }
 
         UnitActionSystem.Instance.OnSelectedActionChanged += OnSelectActionChanged;
-        LevelGrid.Instance.OnAnyUnitMovedGridPosition += OnAnyUnitMovedGridPosition;
+        UnitActionSystem.Instance.OnBusyChanged += OnBusyChanged;
+        // LevelGrid.Instance.OnAnyUnitMovedGridPosition += OnAnyUnitMovedGridPosition;
         
         UpdateGridVisual();
     }
@@ -65,7 +66,8 @@ public class GridSystemVisual : MonoBehaviour
     private void OnDestroy()
     {
         UnitActionSystem.Instance.OnSelectedActionChanged -= OnSelectActionChanged;
-        LevelGrid.Instance.OnAnyUnitMovedGridPosition -= OnAnyUnitMovedGridPosition;
+        UnitActionSystem.Instance.OnBusyChanged -= OnBusyChanged;
+        // LevelGrid.Instance.OnAnyUnitMovedGridPosition -= OnAnyUnitMovedGridPosition;
     }
 
     public void HideAllGridPosition()
@@ -172,6 +174,11 @@ public class GridSystemVisual : MonoBehaviour
     }
 
     private void OnAnyUnitMovedGridPosition(object sender, EventArgs args)
+    {
+        UpdateGridVisual();
+    }
+
+    private void OnBusyChanged(object sender, bool e)
     {
         UpdateGridVisual();
     }
